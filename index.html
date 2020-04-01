@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Portfolio</title>
+
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <main>
+        <article>
+            <div class="article_content">    
+                <h1>About</h1>
+                <p>
+                    My name is Piotr Kocia.
+                    I am a hobbyist C++ and C game engine programmer passionate about performant, deterministic and reliable software.
+                    I have background experience in competitive programming and Front-End development.
+                </p>
+            </div>
+        </article>
+        <article>
+            <div class="article_content">
+                <h1>Projects</h1>
+                <section class="project">
+                    <h2 class="project_title"><a href="https://github.com/kociap/GameEngine">Anton Engine</a></h2>
+                    <p class="project_description">
+                        Game engine I've written in C++17 and inted to use to build a hack and slash dungeon crawler.
+                        The engine uses OpenGL 4.5 Core for rendering, mimas for windowing, input and time, and is designed around ECS and jobs.
+                        Additionally, it features:
+                    </p>
+                    <ul class="project_list">
+                        <li>
+                            replacement for standard library called atl (anton template library) with focus on unicode.
+                        </li>
+                        <li>
+                            immediate mode gui library with builtin docking and tiling (WIP).
+                        </li>
+                        <li>
+                            basic WYSIWYG editor with custom gizmos.
+                        </li>
+                        <li>
+                            OBJ, PNG and TGA importers.
+                        </li>
+                        <li>
+                            math library.
+                        </li>
+                    </ul>
+                    <p class="project_description">
+                        Runs on Win64. Planned Linux and PS support.
+                    </p>
+                </section>
+                <section class="project">
+                    <h2 class="project_title"><a href="https://github.com/kociap/mimas">mimas</a></h2>
+                    <p class="project_description">
+                        mimas is a windowing and system abstraction framework written in C created specifically for use in game engines and games.
+                        It is by design cross-platform and cross-backend, however, currently the only fully supported platform is Windows.
+                        We are planning to add support for Wayland, X11 and Android. 
+                        The api provides access to windowing, file dialogs, time, input and is designed with UTF-8 in mind.
+                    </p>
+                </section>
+                <section class="project">
+                    <h2 class="project_title"><a href="https://github.com/kociap/SpaceMcShooty">SpaceMcShooty</a></h2>
+                    <p class="project_description">
+                        A game I built and submitted for Epic MegaJam 2019 in 2 days. 
+                        The goal is to defend the earth from endless wave of cat invaders.
+                        The game is available for download at <a href="https://an0num0us.itch.io/spacemcshooty">itch.io</a>.
+                    </p>
+                    <div class="project_images">
+                        <img src="https://img.itch.zone/aW1hZ2UvNTIxNDA4LzI3MDcwNjIucG5n/347x500/vsOjtb.png">
+                        <img src="https://img.itch.zone/aW1hZ2UvNTIxNDA4LzI3MDcwNjMucG5n/347x500/En%2BfLa.png">
+                    </div>
+                </section>
+                <section class="project">
+                    <h2 class="project_title"><a href="https://github.com/kociap/UnityBreakout">Unity Breakout</a></h2>
+                    <p class="project_description">
+                        Breakout clone I made in unity, however, I have never finished it. 
+                        I made this project primarily to learn Unity and gameplay programming.
+                    </p>
+                    <div class="project_images">
+                        <img src="https://raw.githubusercontent.com/kociap/UnityBreakout/master/gifs/breakout1.gif">
+                    </div>
+                </section>
+            </div>
+        </article>
+        <article>
+            <div class="article_content">
+                <h1>Contact</h1>
+                <p>
+                    Feel free to contact me at p.kocia@wp.pl
+                </p>
+            </div>
+        </article>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+/* Global Reset */
+::root {
+    font-size: 62.5%;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #E0E0E0;
+}
+
+body, html {
+    min-height: 100vh;
+}
+
+a, a:hover, a:visited, a:active {
+    text-decoration: underline;
+}
+
+
+body {
+    background: fixed linear-gradient(135deg, 
+                #101214, #272c31 27%, #7f00d3 calc(27% + 1px) 28%, #fc891e calc(28% + 1px), #faa436 65%,
+                rgb(38, 150, 23) calc(65% + 1px), #43FF2A calc(65% + 1px + 1rem));
+}
+
+h1 {
+    font-size: 2rem
+}
+
+h2 {
+    font-size: 1.6rem;
+}
+
+a {
+    color: #43FF2A;
+    transition: color 0.1s ease-out;
+}
+
+a:hover, a:active {
+    color: #faa436;
+}
+
+main {
+    padding: 2rem 10%;
+}
+
+article {
+    padding: 1rem 0;
+}
+
+.article_content {
+    padding: 1.5rem;
+    background-color: #1F1F1F;
+    box-shadow: 0.2rem 0.2rem 0.4rem #1F1F1F;
+}
+
+.project {
+    padding: 0.5rem 0;
+}
+
+.project_information {
+    padding-left: 1rem;
+}
+
+.project_description {
+    padding: 0 0 0.5rem 0;
+}
+
+.project_list {
+    padding-left: 1rem;
+    list-style-type: none;
+}
+
+.project_list li::before {
+    content: '-';
+    display: block;
+    float: left;
+    position:relative;
+    left: -0.5rem;
+}
+
+.project_images {
+    padding: 0 0 0.5rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.project_images img {
+    max-height: 25rem;
+    transition: max-height 0.1s ease-out;
+}
+
+.project_images img:active {
+    max-height: 45rem;
+}

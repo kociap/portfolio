@@ -23,8 +23,8 @@ a, a:hover, a:visited, a:active {
 
 body {
     background: fixed linear-gradient(135deg, 
-                #101214, #272c31 27%, #7f00d3 calc(27% + 1px) 28%, #fc891e calc(28% + 1px), #faa436 65%,
-                rgb(38, 150, 23) calc(65% + 1px), #43FF2A calc(65% + 1px + 1rem));
+                #101214, #272c31 27%, #7f00d3 27% 28%, #fc891e 28%, #faa436 65%,
+                rgb(38, 150, 23) 65%, #43FF2A calc(65% + 1rem));
 }
 
 h1 {

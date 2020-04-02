@@ -24,7 +24,7 @@ a, a:hover, a:visited, a:active {
 body {
     background: fixed linear-gradient(135deg, 
                 #101214, #272c31 27%, #7f00d3 27% 28%, #fc891e 28%, #faa436 65%,
-                rgb(38, 150, 23) 65%, #43FF2A calc(65% + 1rem));
+                rgb(20, 138, 30) 65%, rgb(26, 206, 41) calc(65% + 1rem));
 }
 
 h1 {
@@ -45,7 +45,7 @@ a:hover, a:active {
 }
 
 main {
-    padding: 2rem 10%;
+    padding: 1rem 10%;
 }
 
 article {

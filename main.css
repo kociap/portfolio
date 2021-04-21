@@ -52,6 +52,12 @@ article {
     padding: 1rem 0;
 }
 
+code {
+    font-family: "Consolas";
+    background-color: #3F3F3F;
+    padding: 0 0.1rem;
+}
+
 .article_content {
     padding: 1.5rem;
     background-color: #1F1F1F;
@@ -60,6 +66,15 @@ article {
 
 .project {
     padding: 0.5rem 0;
+}
+
+.project_title {
+    padding-bottom: 1rem;
+}
+
+.project_description {
+    padding-bottom: 1rem;
+    line-height: 1.5;
 }
 
 .project_list {
@@ -76,16 +91,20 @@ article {
 }
 
 .project_images {
-    padding: 0.5em 0 0 0;
+    padding-bottom: 1rem;
     display: flex;
     justify-content: center;
 }
 
 .project_images img {
+    display: block;
+    width: auto;
+    height: auto;
     max-height: 25rem;
-    transition: max-height 0.1s ease-out;
+    flex: 0 1;
 }
 
-.project_images img:active {
-    max-height: 45rem;
+.vertical_spacer {
+    display: block;
+    height: 1rem;
 }

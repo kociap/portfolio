@@ -8,7 +8,7 @@
     padding: 0;
     margin: 0;
     font-weight: normal;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Helvetica;
     color: #E0E0E0;
 }
 
@@ -102,9 +102,4 @@ code {
     height: auto;
     max-height: 25rem;
     flex: 0 1;
-}
-
-.vertical_spacer {
-    display: block;
-    height: 1rem;
 }

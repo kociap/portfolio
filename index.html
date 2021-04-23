@@ -34,7 +34,19 @@
                     <p class="project_text">
                         A simulation of objects in a 2D gravitational field I created as the final project for my
                         university programming course. The simulation uses the Verlet integration method to solve
-                        the equation of motion of objects in the gravitational field.
+                        the equation of motion for objects in the gravitational field.
+                    </p>
+                    <p class="project_text">
+                        The simulation data (the position, velocity and mass of each object) is read from a csv file
+                        on startup and is then stored in a simple entity-component system. The user can use mouse and
+                        keyboard to, for instance, move the view, change the simulation speed or the rendering mode. The
+                        application features 4 different methods of visualising the gravitational field created by the
+                        point masses - isolines, 2 contour lines modes with different color schemes and field strength
+                        remapped with a square root function for improved contrast.
+                    </p>
+                    <p class="project_text">
+                        I used mimas for windowing and user input, anton_core and my modified version of the glad OpenGL
+                        loader.
                     </p>
                 </section>
 
@@ -70,10 +82,10 @@
                         achieve the same result with an added benefit of supporting move semantics).
                     </p>
                     <p class="project_text">
-                        Below is an example code snippet presenting the differences between <code>anton::Array</code>
+                        Below are two example code snippets presenting the differences between <code>anton::Array</code>
                         and <code>std::vector</code>
                     </p>
-                    <div class="grid_2x1">
+                    <div class="code_blocks">
                         <div class="code_block grid_column_1">
                             <pre><code><span class="highlight_comment">// constructs an array with 10 elements, all equal to 1</span>
 <span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">anton</span>::<span class="highlight_type">i64</span>&gt; v1(<span class="highlight_number">10</span>, <span class="highlight_number">1</span>);
@@ -98,9 +110,9 @@
                         </div>
                         <div class="code_block grid_column_2">
                             <pre><code><span class="highlight_comment">// constructs an array with 10 elements, all equal to 1</span>
-<span class="highlight_type">std</span>::<span class="highlight_type">vector</span>&lt;<span class="highlight_type">std</span><span class="highlight_type">int64_t</span>&gt; v1(<span class="highlight_number">10</span>, <span class="highlight_number">1</span>);
+<span class="highlight_type">std</span>::<span class="highlight_type">vector</span>&lt;<span class="highlight_type">std</span>::<span class="highlight_type">int64_t</span>&gt; v1(<span class="highlight_number">10</span>, <span class="highlight_number">1</span>);
 <span class="highlight_comment">// constructs a vector with elements 10 and 1</span>
-<span class="highlight_type">std</span>::<span class="highlight_type">vector</span>&lt;<span class="highlight_type">std</span><span class="highlight_type">int64_t</span>&gt; v2{<span class="highlight_number">10</span>, <span class="highlight_number">1</span>};
+<span class="highlight_type">std</span>::<span class="highlight_type">vector</span>&lt;<span class="highlight_type">std</span>::<span class="highlight_type">int64_t</span>&gt; v2{<span class="highlight_number">10</span>, <span class="highlight_number">1</span>};
 
 <span class="highlight_comment">// non-trivially movable/copyable type</span>
 <span class="highlight_keyword">struct</span> <span class="highlight_type">Type</span> {
@@ -146,7 +158,7 @@
                     <p class="project_text">
                         Runs on Win64.
                     </p>
-                    <div class="project_images">
+                    <div class="large_project_images">
                         <img
                             src="https://raw.githubusercontent.com/kociap/GameEngine/master/gifs/engine_multiviewport.gif">
                         <img
@@ -159,14 +171,15 @@
                         mimas is a windowing and system abstraction framework written in C created specifically for
                         use in game engines and games. It is by design cross-platform and cross-backend, however,
                         currently the only fully supported platform is Windows. The api provides access to
-                        windowing, file dialogs, time, input and is designed with UTF-8
-                        in mind. My initial motivation for creating mimas was the lack of direct (yet abstracted)
-                        access to input devices, such as keyboard, and coupling of OpenGL contexts to OS windows in
-                        the existing frameworks. Currently, my goal is
-                        to modernize the C API, by for example using views instead of null-terminators where
-                        possible, and provide a finer control over the event loop to make the entire framework more
-                        flexible. Additionally, I want to add an API for direct access to the connected gamepads and
-                        improve the existing Displays API.
+                        windowing, file dialogs, time, input and is designed with UTF-8 in mind. My initial motivation
+                        for creating mimas was the lack of direct (yet abstracted) access to input devices, such as
+                        keyboard, and coupling of OpenGL contexts to OS windows in the existing frameworks.
+                    </p>
+                    <p class="project_text">
+                        Currently, my goal is to modernize the C API, by for example using views instead of
+                        null-terminators where possible, and provide a finer control over the event loop to make the
+                        entire framework more flexible. Additionally, I want to add an API for direct access to the
+                        connected gamepads and improve the existing Displays API.
                     </p>
                 </section>
                 <section class="project">

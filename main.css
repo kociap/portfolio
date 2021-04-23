@@ -24,7 +24,7 @@ a, a:hover, a:visited, a:active {
 body {
     background: fixed linear-gradient(135deg, 
                 #101214, #272c31 27%, #7f00d3 27% 28%, #fc891e 28%, #faa436 65%,
-                rgb(20, 138, 30) 65%, rgb(26, 206, 41) calc(65% + 1rem));
+                rgb(20, 138, 30) 65%, rgb(86, 206, 26) calc(65% + 1rem));
 }
 
 h1 {
@@ -36,7 +36,7 @@ h2 {
 }
 
 a {
-    color: #43FF2A;
+    color: #9FDF33;
     transition: color 0.1s ease-out;
 }
 
@@ -54,7 +54,7 @@ article {
 
 code {
     font-family: "Consolas";
-    background-color: #3F3F3F;
+    background-color: #3A3A3A;
     padding: 0 0.1rem;
 }
 
@@ -72,14 +72,19 @@ code {
     padding-bottom: 1rem;
 }
 
-.project_description {
-    padding-bottom: 1rem;
+.project_text {
+    padding-bottom: 0.5rem;
     line-height: 1.5;
 }
 
 .project_list {
+    padding-bottom: 0.5rem;
     padding-left: 1rem;
     list-style-type: none;
+}
+
+.project_list li:not(:last-child) {
+    padding-bottom: 0.3rem;
 }
 
 .project_list li::before {
@@ -102,4 +107,51 @@ code {
     height: auto;
     max-height: 25rem;
     flex: 0 1;
+}
+
+.grid_2x1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1rem;
+}
+
+.grid_column_1 {
+    grid-column: 1;
+}
+
+.grid_column_2 {
+    grid-column: 2;
+}
+
+.code_block {
+    padding-bottom: 1rem;
+}
+
+.code_block pre {
+    padding: 0.7rem;
+    background-color: #3A3A3A;
+}
+
+.code_block code {
+    background-color: transparent;
+}
+
+.code_block span {
+    font-family: "Consolas";
+}
+
+.code_block .highlight_type {
+    color: #9FDF33;
+}
+
+.code_block .highlight_comment {
+    color: #8F8F8F;
+}
+
+.code_block .highlight_keyword {
+    color: lightskyblue;
+}
+
+.code_block .highlight_number {
+    color: rgb(189, 119, 255);
 }

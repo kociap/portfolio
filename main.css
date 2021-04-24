@@ -190,6 +190,8 @@ code {
 }
 
 .code_block {
+    min-width: 0;
+    overflow: auto;
     flex: 1;
     padding: 0.5rem 0;
 }
@@ -208,7 +210,6 @@ code {
     }
 
     .code_block {
-        flex: 1;
         padding: 0 0.5rem;
     }
     

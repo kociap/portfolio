@@ -92,7 +92,7 @@
 <span class="highlight_comment">// constructs an array with 10 elements, all equal to 1</span>
 <span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">anton</span>::<span class="highlight_type">i64</span>&gt; v2{<span class="highlight_number">10</span>, <span class="highlight_number">1</span>};
 <span class="highlight_comment">// constructs an array with elements 10 and 1</span>
-<span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">anton</span>::<span class="highlight_type">i64</span>&gt; v3{variadic_construct, <span class="highlight_number">10</span>, <span class="highlight_number">1</span>};
+<span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">anton</span>::<span class="highlight_type">i64</span>&gt; v3{<span class="highlight_type">anton</span>::variadic_construct, <span class="highlight_number">10</span>, <span class="highlight_number">1</span>};
 
 <span class="highlight_comment">// non-trivially movable/copyable type</span>
 <span class="highlight_keyword">struct</span> <span class="highlight_type">Type</span> {
@@ -106,7 +106,7 @@
 // but it does not require a function call, thus simplifying debugging 
 // and reducing overhead in debug builds.</span>
 <span class="highlight_type">Type</span> t;
-<span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">Type</span>&gt; v4{variadic_construct, <span class="highlight_type">ANTON_MOV</span>(t)};</code></pre>
+<span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">Type</span>&gt; v4{<span class="highlight_type">anton</span>::variadic_construct, <span class="highlight_type">ANTON_MOV</span>(t)};</code></pre>
                         </div>
                         <div class="code_block grid_column_2">
                             <pre><code><span class="highlight_comment">// constructs an array with 10 elements, all equal to 1</span>

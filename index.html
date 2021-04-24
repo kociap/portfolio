@@ -72,10 +72,30 @@
                     <p class="project_text">
                         C++ compilation times are notoriously slow. The standard library headers are large and can
                         take even seconds to compile (for example the <code>&lt;filesystem&gt;</code> header). The
-                        main idea behind anton_core is blazing fast compilation with its headers taking 1-10ms.
+                        main idea behind anton_core is blazing fast compilation with its headers taking 1-10ms. However,
+                        there are many more reasons besides this one, namely:
+                    </p>
+                    <ul class="project_list">
+                        <li>
+                            some types in the std differ significantly between debug and optimized builds making it
+                            impossible to build optimized libraries and use them in debug builds.
+                        </li>
+                        <li>
+                            the std implementations uses cryptic and lengthy names making it difficult to understand
+                            the code during debugging.
+                        </li>
+                        <li>
+                            the std uses deeply nested function calls resulting in unnecessary overhead reducing
+                            performance in debug and optimized builds and also making it even more difficult to debug.
+                        </li>
+                        <li>
+                            certain apis and interfaces are unnecessarily complex, for example allocators.
+                        </li>
+                    </ul>
+                    <p class="project_text">
                         Additionally, the library is highly customizable for my purposes, has features from future
                         C++ standards (for example the stacktrace API from C++23) and improvements over the existing
-                        ones (for example assert with a message and the stacktrace), provides cleaner API in certain
+                        ones (for example assert with a message and the stacktrace), provides better API in certain
                         cases than std (for instance the equivalent of <code>std::vector</code>
                         (<code>anton::Array</code>) can be uniformly initialized using <code>{}</code> and instead
                         of <code>std::initializer_list</code> it uses a variadic constructor with tag dispatch to

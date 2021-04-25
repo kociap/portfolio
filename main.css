@@ -1,15 +1,22 @@
 /* Global Reset */
-::root {
-    font-size: 62.5%;
-}
-
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    color: #E0E0E0;
+    font-family: inherit;
+    font-weight: inherit;
+    min-width: inherit;
+}
+
+:root {
     font-weight: normal;
     font-family: Helvetica;
-    color: #E0E0E0;
+    /* 
+     * min-width: auto; is the default flexbox sets which breaks how pre blocks size.
+     * change to min-width: 0; which is the default and fixes the behaviour
+    */
+    min-width: 0;
 }
 
 body, html {
@@ -21,20 +28,13 @@ a, a:hover, a:visited, a:active {
 }
 
 
+
 body {
     background: fixed linear-gradient(135deg, 
                 #101214, #272c31 27%, #7f00d3 27% 28%, #fc891e 28%, #faa436 65%,
                 rgb(20, 138, 30) 65%, rgb(86, 206, 26) calc(65% + 1rem));
     display: flex;
     justify-content: center;
-}
-
-h1 {
-    font-size: 2rem
-}
-
-h2 {
-    font-size: 1.6rem;
 }
 
 a {
@@ -50,6 +50,12 @@ main {
     flex: 1;
     padding: 1rem 5rem;
     max-width: 1600px;
+}
+
+@media(max-width: 60rem) {
+    main {
+        padding: 1rem 5%;
+    }
 }
 
 article {
@@ -68,6 +74,10 @@ code {
     box-shadow: 0.2rem 0.2rem 0.4rem #1F1F1F;
 }
 
+.article_header {
+    font-size: 2rem;
+}
+
 .project {
     padding: 1rem 0;
 }
@@ -80,7 +90,8 @@ code {
     padding-bottom: 0;
 }
 
-.project_title {
+.project_header {
+    font-size: 1.5rem;
     padding-bottom: 1rem;
 }
 
@@ -95,8 +106,8 @@ code {
     list-style-type: none;
 }
 
-.project_list li:not(:last-child) {
-    padding-bottom: 0.3rem;
+.project_list li {
+    line-height: 1.5;
 }
 
 .project_list li::before {
@@ -167,7 +178,7 @@ code {
 .large_project_images img {
     width: auto;
     height: auto;
-    max-height: 25rem;
+    max-height: 30rem;
     /* forces images to downsize when the container is too small */
     max-width: 100%;
     object-fit: scale-down;
@@ -175,24 +186,23 @@ code {
     padding: 0.5rem 0;
 }
 
-.project_images img:first-child {
+.large_project_images img:first-child {
     padding-top: 0;
 }
 
-.project_images img:last-child {
+.large_project_images img:last-child {
     padding-bottom: 0;
 }
 
 .code_blocks {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
+    width: 100%;
+    font-family: "Consolas";
 }
 
 .code_block {
     min-width: 0;
-    overflow: auto;
-    flex: 1;
+    max-width: 100%;
+    width: 100%;
     padding: 0.5rem 0;
 }
 
@@ -205,11 +215,13 @@ code {
 }
 
 @media(min-width: 96.25rem) {
-    .code_blocks {
+    .code_blocks.two_column {
+        display: flex;
         flex-direction: row;
     }
 
-    .code_block {
+    .code_blocks.two_column .code_block {
+        flex: 1;
         padding: 0 0.5rem;
     }
     
@@ -223,31 +235,51 @@ code {
 }
 
 .code_block pre {
+    white-space: pre;
+    width: 100%;
+    max-width: 100%;
+    max-height: 35.4rem;
     padding: 0.7rem;
-    background-color: #3A3A3A;
     overflow: auto;
+    background-color: #3A3A3A;
 }
 
 .code_block code {
+    padding: 0;
     background-color: transparent;
-}
-
-.code_block span {
-    font-family: "Consolas";
-}
-
-.code_block .highlight_type {
-    color: #9FDF33;
 }
 
 .code_block .highlight_comment {
     color: #8F8F8F;
 }
 
+.code_block .highlight_macro {
+    color: red;
+}
+
+.code_block .highlight_type,
+.code_block .highlight_function,
+.code_block .highlight_function_call {
+    color: #9FDF33;
+}
+
+.code_block .highlight_builtin_type {
+    color: rgb(85, 184, 255);
+}
+
 .code_block .highlight_keyword {
-    color: lightskyblue;
+    /* color: rgb(85, 184, 255); */
+    color: red;
 }
 
 .code_block .highlight_number {
-    color: rgb(189, 119, 255);
+    color: rgb(183, 107, 255);
+}
+
+.code_block .highlight_operator {
+    color: red;
+}
+
+.code_block .highlight_parameter {
+    color: orange;
 }

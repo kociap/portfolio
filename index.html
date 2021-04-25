@@ -12,7 +12,7 @@
     <main>
         <article>
             <div class="article_content">
-                <h1>About</h1>
+                <h1 class="article_header">About</h1>
                 <p>
                     My name is Piotr Kocia.
                     I am a hobbyist C++ and C game engine programmer passionate about performant, deterministic and
@@ -23,11 +23,379 @@
         </article>
         <article>
             <div class="article_content">
-                <h1>Projects</h1>
+                <h1 class="article_header">Projects</h1>
                 <section class="project">
-                    <h2 class="project_title"><a href="https://github.com/kociap/gravity_simulation">Gravity
+                    <h2 class="project_header"><a href="https://github.com/kociap/vush2">Vush 2</a> [C++]</h2>
+                    <p class="project_text">
+                        Vush 2 is a shading language that compiles to GLSL (and eventually it will be possible to
+                        compile Vush to SPIR-V). The syntax was initially based on that of GLSL, however, it is
+                        constantly evolving and is being simplified and modernized. Two prominent features of Vush are
+                        multiple shaders in a single file, which removes the need to split stages among multiple files
+                        and importing, which alleviates the problem of code duplication or custom shader preprocessing
+                        before compilation.
+                    </p>
+                    <p class="project_text">
+                        However, there are many more features in Vush, some of them are:
+                    </p>
+                    <ul class="project_list">
+                        <li>
+                            buffer generation from stage parameters via user-provided callback.
+                        </li>
+                        <li>
+                            implicitly generated shader stage inputs/outputs from the return types or parameters.
+                        </li>
+                        <li>
+                            compiletime <code>if</code>s allowing conditional compilation of expressions, statements,
+                            function parameters and declarations.
+                        </li>
+                        <li>
+                            in-shader per pass user-defined settings that can be used to define behaviour in the shader
+                            and later retrieved in the code.
+                        </li>
+                    </ul>
+                    <p class="project_text">
+                        Additionally, in Vush, unlike in the single-pass GLSL, all declarations are available anywhere
+                        in the source files, which removes the need for forward declarations.
+                    </p>
+                    <p class="project_text">
+                        Below is an example Vush shader I use for smoke particles and the compiled GLSL output
+                    </p>
+                    <div class="code_blocks">
+                        <div class="code_block">
+                            <pre><code><span class="highlight_comment">// smoke_particle.vush</span>
+
+<span class="highlight_keyword">settings</span> smoke_particle {
+    depth_stencil: {
+        depth_write : <span class="highlight_number">false</span>
+    }
+
+    blend_attachments[<span class="highlight_number">0</span>]: {
+        enable : <span class="highlight_number">true</span>
+        src_color_blend_factor: src_alpha
+        dst_color_blend_factor: one_minus_src_alpha
+        color_blend_op:add
+        src_alpha_blend_factor: src_alpha
+        dst_alpha_blend_factor: one_minus_src_alpha
+        alpha_blend_op:add
+    }
+}
+
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VP</span> {
+    <span class="highlight_builtin_type">mat4</span> view_projection;
+    <span class="highlight_builtin_type">mat4</span> view;
+    <span class="highlight_builtin_type">mat4</span> inverse_view;
+    <span class="highlight_builtin_type">vec3</span> camera_position;
+    <span class="highlight_comment">// milliseconds</span>
+    <span class="highlight_builtin_type">float</span> time;
+}
+
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VS_IN</span> {
+    <span class="highlight_builtin_type">vec3</span> position;
+    <span class="highlight_builtin_type">float</span> alpha_factor;
+    <span class="highlight_comment">// [0.0, 1.0]</span>
+    <span class="highlight_builtin_type">float</span> random;
+    <span class="highlight_builtin_type">float</span> size;
+}
+
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VS_OUT</span> {
+    <span class="highlight_builtin_type">vec2</span> texcoord1;
+    <span class="highlight_builtin_type">vec2</span> texcoord2;
+    <span class="highlight_builtin_type">vec2</span> texcoord3;
+    <span class="highlight_builtin_type">float</span> alpha_factor;
+}
+
+<span class="highlight_type">VS_OUT</span> smoke_particle::<span class="highlight_keyword">vertex</span>(<span class="highlight_type">VS_IN</span> <span class="highlight_parameter">vin</span> <span class="highlight_keyword">from</span> <span class="highlight_keyword">in</span>, <span class="highlight_type">VP</span> <span class="highlight_parameter">vp</span> <span class="highlight_keyword">from</span> Aspect, <span class="highlight_builtin_type">mat4</span> <span class="highlight_parameter">model_matrix</span> <span class="highlight_keyword">from</span> Draw) {
+    <span class="highlight_type">VS_OUT</span> vs_out;
+    vs_out.alpha_factor <span class="highlight_operator">=</span> <span class="highlight_parameter">vin</span>.alpha_factor;
+    <span class="highlight_builtin_type">vec4</span> position = <span class="highlight_builtin_type">vec4</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>);
+    <span class="highlight_keyword">switch</span> gl_VertexIndex <span class="highlight_operator">%</span> <span class="highlight_number">6</span> {
+        <span class="highlight_number">0</span> <span class="highlight_operator">=></span> {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">1.0</span>);
+        }
+
+        <span class="highlight_number">1</span> <span class="highlight_operator">=></span> {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>);
+        }
+
+        <span class="highlight_number">2</span> <span class="highlight_operator">=></span> {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">1.0</span>, <span class="highlight_number">1.0</span>);
+        }
+
+        <span class="highlight_number">3</span> <span class="highlight_operator">=></span> {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>);
+        }
+
+        <span class="highlight_number">4</span> <span class="highlight_operator">=></span> {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">1.0</span>, <span class="highlight_number">0.0</span>);
+        }
+
+        <span class="highlight_number">5</span> <span class="highlight_operator">=></span> {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">1.0</span>, <span class="highlight_number">1.0</span>);
+        }
+    }
+
+    position <span class="highlight_operator">*=</span> <span class="highlight_parameter">vin</span>.size;
+
+    vs_out.texcoord2 <span class="highlight_operator">=</span> vs_out.texcoord1 <span class="highlight_operator">*</span>
+    <span class="highlight_number">0.4</span> <span class="highlight_operator">-</span> <span class="highlight_function_call">mod</span>(<span class="highlight_parameter">vp</span>.time <span class="highlight_operator">*</span> <span class="highlight_number">0.00009</span>, <span class="highlight_number">10.0</span>) <span class="highlight_operator">+</span> <span class="highlight_parameter">vin</span>.random;
+    vs_out.texcoord3 <span class="highlight_operator">=</span> vs_out.texcoord1 <span class="highlight_operator">*</span>
+    <span class="highlight_number">0.7</span> <span class="highlight_operator">-</span> <span class="highlight_function_call">mod</span>(<span class="highlight_parameter">vp</span>.time <span class="highlight_operator">*</span> <span class="highlight_number">0.00009</span>, <span class="highlight_number">10.0</span>) <span class="highlight_operator">+</span> <span class="highlight_parameter">vin</span>.random;
+
+    <span class="highlight_builtin_type">float</span> rotation_angle <span class="highlight_operator">=</span> <span class="highlight_parameter">vin</span>.random <span class="highlight_operator">-</span> <span class="highlight_number">0.5</span>;
+    <span class="highlight_builtin_type">float</span> sin_val <span class="highlight_operator">=</span> <span class="highlight_function_call">sin</span>(rotation_angle);
+    <span class="highlight_builtin_type">float</span> cos_val <span class="highlight_operator">=</span> <span class="highlight_function_call">cos</span>(rotation_angle);
+    <span class="highlight_builtin_type">mat4</span> rotation_mat <span class="highlight_operator">=</span> <span class="highlight_builtin_type">mat4</span>(<span class="highlight_builtin_type">vec4</span>(cos_val, <span class="highlight_operator">-</span>sin_val, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>), <span class="highlight_builtin_type">vec4</span>(sin_val, cos_val, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>),
+                             <span class="highlight_builtin_type">vec4</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">1.0</span>, <span class="highlight_number">0.0</span>), <span class="highlight_builtin_type">vec4</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">1.0</span>));
+
+    <span class="highlight_builtin_type">mat4</span> inv_model <span class="highlight_operator">=</span> <span class="highlight_function_call">inverse</span>(<span class="highlight_parameter">model_matrix</span>);
+    <span class="highlight_builtin_type">vec4</span> model_pos <span class="highlight_operator">=</span> inv_model <span class="highlight_operator">*</span> <span class="highlight_parameter">vp</span>.inverse_view <span class="highlight_operator">*</span> rotation_mat <span class="highlight_operator">*</span> position;
+    <span class="highlight_comment">// vec4 model_pos = inv_model * vp.inv_view * position;</span>
+    model_pos.w <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+    gl_Position <span class="highlight_operator">=</span> <span class="highlight_parameter">vp</span>.view_projection <span class="highlight_operator">*</span> (<span class="highlight_builtin_type">vec4</span>(<span class="highlight_parameter">vin</span>.position, <span class="highlight_number">0.0</span>) <span class="highlight_operator">+</span> <span class="highlight_parameter">model_matrix</span> <span class="highlight_operator">*</span> model_pos);
+    <span class="highlight_keyword">return</span> vs_out;
+}
+
+<span class="highlight_keyword">struct</span> <span class="highlight_type">Dynamic</span> {
+    <span class="highlight_builtin_type">vec4</span> color;
+}
+
+<span class="highlight_keyword">struct</span> <span class="highlight_type">FS_OUT</span> {
+    <span class="highlight_builtin_type">vec4</span> color;
+}
+
+<span class="highlight_type">FS_OUT</span> smoke_particle::<span class="highlight_keyword">fragment</span>(<span class="highlight_type">VS_OUT</span> <span class="highlight_parameter">frag_in</span>, <span class="highlight_type">Dynamic</span> <span class="highlight_parameter">dynamic_data</span> <span class="highlight_keyword">from</span> Draw,
+                                <span class="highlight_builtin_type">sampler2D</span> <span class="highlight_parameter">tex1</span> <span class="highlight_keyword">from</span> Material, <span class="highlight_builtin_type">sampler2D</span> <span class="highlight_parameter">tex2</span> <span class="highlight_keyword">from</span> Material,
+                                <span class="highlight_builtin_type">sampler2D</span> <span class="highlight_parameter">tex3</span> <span class="highlight_keyword">from</span> Material) {
+    <span class="highlight_type">FS_OUT</span> fs_out;
+    fs_out.color <span class="highlight_operator">=</span> <span class="highlight_function_call">texture</span>(<span class="highlight_parameter">tex1</span>, <span class="highlight_parameter">frag_in</span>.texcoord1) <span class="highlight_operator">*</span> <span class="highlight_function_call">texture</span>(<span class="highlight_parameter">tex2</span>, <span class="highlight_parameter">frag_in</span>.texcoord2) <span class="highlight_operator">*</span> <span class="highlight_function_call">texture</span>(<span class="highlight_parameter">tex3</span>, <span class="highlight_parameter">frag_in</span>.texcoord3);
+    fs_out.color.a <span class="highlight_operator">*=</span> <span class="highlight_parameter">frag_in</span>.alpha_factor;
+    <span class="highlight_keyword">return</span> fs_out;
+}</code></pre>
+                        </div>
+                        <div class="code_block">
+                            <pre><code><span class="highlight_comment">// smoke_particle.vert</span>
+
+<span class="highlight_macro">#version 460 core</span>
+<span class="highlight_macro">#pragma shader_stage(vertex)</span>
+
+<span class="highlight_macro">#extension GL_EXT_nonuniform_qualifier: require</span>
+
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VP</span> {
+    <span class="highlight_builtin_type">mat4</span> view_projection;
+    <span class="highlight_builtin_type">mat4</span> view;
+    <span class="highlight_builtin_type">mat4</span> inverse_view;
+    <span class="highlight_builtin_type">vec3</span> camera_position;
+    <span class="highlight_builtin_type">float</span> time;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VS_IN</span> {
+    <span class="highlight_builtin_type">vec3</span> position;
+    <span class="highlight_builtin_type">float</span> alpha_factor;
+    <span class="highlight_builtin_type">float</span> random;
+    <span class="highlight_builtin_type">float</span> size;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VS_OUT</span> {
+    <span class="highlight_builtin_type">vec2</span> texcoord1;
+    <span class="highlight_builtin_type">vec2</span> texcoord2;
+    <span class="highlight_builtin_type">vec2</span> texcoord3;
+    <span class="highlight_builtin_type">float</span> alpha_factor;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">Dynamic</span> {
+    <span class="highlight_builtin_type">vec4</span> color;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">FS_OUT</span> {
+    <span class="highlight_builtin_type">vec4</span> color;
+};
+
+<span class="highlight_keyword">layout</span>(std140, binding <span class="highlight_operator">=</span> <span class="highlight_number">0</span>) <span class="highlight_keyword">uniform</span> Draw {
+    <span class="highlight_type">Dynamic</span> dynamic_data;
+    <span class="highlight_builtin_type">mat4</span> model_matrix;
+} _draw;
+
+<span class="highlight_keyword">layout</span>(binding <span class="highlight_operator">=</span> <span class="highlight_number">1</span>) <span class="highlight_keyword">uniform</span> <span class="highlight_builtin_type">sampler2D</span> tex1;
+<span class="highlight_keyword">layout</span>(binding <span class="highlight_operator">=</span> <span class="highlight_number">2</span>) <span class="highlight_keyword">uniform</span> <span class="highlight_builtin_type">sampler2D</span> tex2;
+<span class="highlight_keyword">layout</span>(binding <span class="highlight_operator">=</span> <span class="highlight_number">3</span>) <span class="highlight_keyword">uniform</span> <span class="highlight_builtin_type">sampler2D</span> tex3;
+
+<span class="highlight_keyword">layout</span>(std140, binding <span class="highlight_operator">=</span> <span class="highlight_number">4</span>) <span class="highlight_keyword">uniform</span> Aspect {
+    <span class="highlight_type">VP</span> vp;
+} _aspect;
+
+
+
+<span class="highlight_type">VS_OUT</span> <span class="highlight_function">_pass_smoke_particle_stage_vertex</span>(<span class="highlight_type">VS_IN</span> <span class="highlight_parameter">vin</span>, <span class="highlight_type">VP</span> <span class="highlight_parameter">vp</span>, <span class="highlight_builtin_type">mat4</span> <span class="highlight_parameter">model_matrix</span>) {
+    <span class="highlight_type">VS_OUT</span> vs_out;
+    vs_out.alpha_factor <span class="highlight_operator">=</span> <span class="highlight_parameter">vin</span>.alpha_factor;
+    <span class="highlight_builtin_type">vec4</span> position <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec4</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>);
+    <span class="highlight_keyword">switch</span>(gl_VertexIndex <span class="highlight_operator">%</span> <span class="highlight_number">6</span>) {
+        <span class="highlight_keyword">case</span> <span class="highlight_number">0</span>:
+        {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">1.0</span>);
+            <span class="highlight_keyword">break</span>;
+        }
+        <span class="highlight_keyword">case</span> <span class="highlight_number">1</span>:
+        {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>);
+            <span class="highlight_keyword">break</span>;
+        }
+        <span class="highlight_keyword">case</span> <span class="highlight_number">2</span>:
+        {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">1.0</span>, <span class="highlight_number">1.0</span>);
+            <span class="highlight_keyword">break</span>;
+        }
+        <span class="highlight_keyword">case</span> <span class="highlight_number">3</span>:
+        {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>);
+            <span class="highlight_keyword">break</span>;
+        }
+        <span class="highlight_keyword">case</span> <span class="highlight_number">4</span>:
+        {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_operator">-</span><span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">1.0</span>, <span class="highlight_number">0.0</span>);
+            <span class="highlight_keyword">break</span>;
+        }
+        <span class="highlight_keyword">case</span> <span class="highlight_number">5</span>:
+        {
+            position.x <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            position.y <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+            vs_out.texcoord1 <span class="highlight_operator">=</span> <span class="highlight_builtin_type">vec2</span>(<span class="highlight_number">1.0</span>, <span class="highlight_number">1.0</span>);
+            <span class="highlight_keyword">break</span>;
+        }
+    }
+    position <span class="highlight_operator">*=</span> <span class="highlight_parameter">vin</span>.size;
+    vs_out.texcoord2 <span class="highlight_operator">=</span> vs_out.texcoord1 <span class="highlight_operator">*</span> <span class="highlight_number">0.4</span> <span class="highlight_operator">-</span> <span class="highlight_function_call">mod</span>(<span class="highlight_parameter">vp</span>.time <span class="highlight_operator">*</span> <span class="highlight_number">0.00009</span>, <span class="highlight_number">10.0</span>) <span class="highlight_operator">+</span> <span class="highlight_parameter">vin</span>.random;
+    vs_out.texcoord3 <span class="highlight_operator">=</span> vs_out.texcoord1 <span class="highlight_operator">*</span> <span class="highlight_number">0.7</span> <span class="highlight_operator">-</span> <span class="highlight_function_call">mod</span>(<span class="highlight_parameter">vp</span>.time <span class="highlight_operator">*</span> <span class="highlight_number">0.00009</span>, <span class="highlight_number">10.0</span>) <span class="highlight_operator">+</span> <span class="highlight_parameter">vin</span>.random;
+    <span class="highlight_builtin_type">float</span> rotation_angle <span class="highlight_operator">=</span> <span class="highlight_parameter">vin</span>.random <span class="highlight_operator">-</span> <span class="highlight_number">0.5</span>;
+    <span class="highlight_builtin_type">float</span> sin_val <span class="highlight_operator">=</span> <span class="highlight_function_call">sin</span>(rotation_angle);
+    <span class="highlight_builtin_type">float</span> cos_val <span class="highlight_operator">=</span> <span class="highlight_function_call">cos</span>(rotation_angle);
+    <span class="highlight_builtin_type">mat4</span> rotation_mat <span class="highlight_operator">=</span> <span class="highlight_builtin_type">mat4</span>(<span class="highlight_builtin_type">vec4</span>(cos_val, <span class="highlight_operator">-</span>sin_val, <span class="highlight_number">0.0</span>,<span class="highlight_number"> 0.0</span>), <span class="highlight_builtin_type">vec4</span>(sin_val, cos_val, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>),
+                             <span class="highlight_builtin_type">vec4</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">1.0</span>, <span class="highlight_number">0.0</span>), <span class="highlight_builtin_type">vec4</span>(<span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">0.0</span>, <span class="highlight_number">1.0</span>));
+    <span class="highlight_builtin_type">mat4</span> inv_model <span class="highlight_operator">=</span> <span class="highlight_function_call">inverse</span>(<span class="highlight_parameter">model_matrix</span>);
+    <span class="highlight_builtin_type">vec4</span> model_pos <span class="highlight_operator">=</span> inv_model <span class="highlight_operator">*</span> <span class="highlight_parameter">vp</span>.inverse_view <span class="highlight_operator">*</span> rotation_mat <span class="highlight_operator">*</span> position;
+    model_pos.w <span class="highlight_operator">=</span> <span class="highlight_number">1.0</span>;
+    gl_Position <span class="highlight_operator">=</span> <span class="highlight_parameter">vp</span>.view_projection <span class="highlight_operator">*</span> (<span class="highlight_builtin_type">vec4</span>(<span class="highlight_parameter">vin</span>.position, <span class="highlight_number">0.0</span>) <span class="highlight_operator">+</span> <span class="highlight_parameter">model_matrix</span> <span class="highlight_operator">*</span> model_pos);
+    <span class="highlight_keyword">return</span> vs_out;
+}
+
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">0</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">vec3</span> _pass_smoke_particle_vin_position;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">1</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">float</span> _pass_smoke_particle_vin_alpha_factor;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">2</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">float</span> _pass_smoke_particle_vin_random;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">3</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">float</span> _pass_smoke_particle_vin_size;
+
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">0</span>) <span class="highlight_keyword">out</span> <span class="highlight_builtin_type">vec2</span> _pass_smoke_particle_out_texcoord1;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">1</span>) <span class="highlight_keyword">out</span> <span class="highlight_builtin_type">vec2</span> _pass_smoke_particle_out_texcoord2;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">2</span>) <span class="highlight_keyword">out</span> <span class="highlight_builtin_type">vec2</span> _pass_smoke_particle_out_texcoord3;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">3</span>) <span class="highlight_keyword">out</span> <span class="highlight_builtin_type">float</span> _pass_smoke_particle_out_alpha_factor;
+
+<span class="highlight_builtin_type">void</span> <span class="highlight_function">main</span>() {
+    <span class="highlight_type">VS_IN</span> arg0;
+    arg0.position <span class="highlight_operator">=</span> _pass_smoke_particle_vin_position;
+    arg0.alpha_factor <span class="highlight_operator">=</span> _pass_smoke_particle_vin_alpha_factor;
+    arg0.random <span class="highlight_operator">=</span> _pass_smoke_particle_vin_random;
+    arg0.size <span class="highlight_operator">=</span> _pass_smoke_particle_vin_size;
+    <span class="highlight_type">VS_OUT</span> _res <span class="highlight_operator">=</span> <span class="highlight_function_call">_pass_smoke_particle_stage_vertex</span>(arg0, _aspect.vp, _draw.model_matrix);
+    _pass_smoke_particle_out_texcoord1 <span class="highlight_operator">=</span> _res.texcoord1;
+    _pass_smoke_particle_out_texcoord2 <span class="highlight_operator">=</span> _res.texcoord2;
+    _pass_smoke_particle_out_texcoord3 <span class="highlight_operator">=</span> _res.texcoord3;
+    _pass_smoke_particle_out_alpha_factor <span class="highlight_operator">=</span> _res.alpha_factor;
+}
+                                
+<span class="highlight_comment">// smoke_particle.frag</span>
+
+<span class="highlight_macro">#version 460 core</span>
+<span class="highlight_macro">#pragma shader_stage(fragment)</span>
+
+<span class="highlight_macro">#extension GL_EXT_nonuniform_qualifier: require</span>
+
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VP</span> {
+    <span class="highlight_builtin_type">mat4</span> view_projection;
+    <span class="highlight_builtin_type">mat4</span> view;
+    <span class="highlight_builtin_type">mat4</span> inverse_view;
+    <span class="highlight_builtin_type">vec3</span> camera_position;
+    <span class="highlight_builtin_type">float</span> time;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VS_IN</span> {
+    <span class="highlight_builtin_type">vec3</span> position;
+    <span class="highlight_builtin_type">float</span> alpha_factor;
+    <span class="highlight_builtin_type">float</span> random;
+    <span class="highlight_builtin_type">float</span> size;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">VS_OUT</span> {
+    <span class="highlight_builtin_type">vec2</span> texcoord1;
+    <span class="highlight_builtin_type">vec2</span> texcoord2;
+    <span class="highlight_builtin_type">vec2</span> texcoord3;
+    <span class="highlight_builtin_type">float</span> alpha_factor;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">Dynamic</span> {
+    <span class="highlight_builtin_type">vec4</span> color;
+};
+<span class="highlight_keyword">struct</span> <span class="highlight_type">FS_OUT</span> {
+    <span class="highlight_builtin_type">vec4</span> color;
+};
+
+<span class="highlight_keyword">layout</span>(std140, binding <span class="highlight_operator">=</span> <span class="highlight_number">0</span>) <span class="highlight_keyword">uniform</span> Draw {
+    <span class="highlight_type">Dynamic</span> dynamic_data;
+    <span class="highlight_builtin_type">mat4</span> model_matrix;
+} _draw;
+
+<span class="highlight_keyword">layout</span>(binding <span class="highlight_operator">=</span> <span class="highlight_number">1</span>) <span class="highlight_keyword">uniform</span> <span class="highlight_builtin_type">sampler2D</span> tex1;
+<span class="highlight_keyword">layout</span>(binding <span class="highlight_operator">=</span> <span class="highlight_number">2</span>) <span class="highlight_keyword">uniform</span> <span class="highlight_builtin_type">sampler2D</span> tex2;
+<span class="highlight_keyword">layout</span>(binding <span class="highlight_operator">=</span> <span class="highlight_number">3</span>) <span class="highlight_keyword">uniform</span> <span class="highlight_builtin_type">sampler2D</span> tex3;
+
+<span class="highlight_keyword">layout</span>(std140, binding <span class="highlight_operator">=</span> <span class="highlight_number">4</span>) <span class="highlight_keyword">uniform</span> Aspect {
+    <span class="highlight_type">VP</span> vp;
+} _aspect;
+
+<span class="highlight_type">FS_OUT</span> <span class="highlight_function">_pass_smoke_particle_stage_fragment</span>(<span class="highlight_type">VS_OUT</span> <span class="highlight_parameter">frag_in</span>, <span class="highlight_type">Dynamic</span> <span class="highlight_parameter">dynamic_data</span>) {
+    <span class="highlight_type">FS_OUT</span> fs_out;
+    fs_out.color <span class="highlight_operator">=</span> <span class="highlight_function_call">texture</span>(tex1, <span class="highlight_parameter">frag_in</span>.texcoord1) <span class="highlight_operator">*</span> <span class="highlight_function_call">texture</span>(tex2, <span class="highlight_parameter">frag_in</span>.texcoord2) <span class="highlight_operator">*</span> <span class="highlight_function_call">texture</span>(tex3, <span class="highlight_parameter">frag_in</span>.texcoord3);
+    fs_out.color.a <span class="highlight_operator">*=</span> <span class="highlight_parameter">frag_in</span>.alpha_factor;
+    <span class="highlight_keyword">return</span> fs_out;
+}
+
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">0</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">vec2</span> _pass_smoke_particle_in_frag_in_texcoord1;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">1</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">vec2</span> _pass_smoke_particle_in_frag_in_texcoord2;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">2</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">vec2</span> _pass_smoke_particle_in_frag_in_texcoord3;
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">3</span>) <span class="highlight_keyword">in</span> <span class="highlight_builtin_type">float</span> _pass_smoke_particle_in_frag_in_alpha_factor;
+
+<span class="highlight_keyword">layout</span>(location <span class="highlight_operator">=</span> <span class="highlight_number">0</span>) <span class="highlight_keyword">out</span> <span class="highlight_builtin_type">vec4</span> _pass_smoke_particle_out_color;
+
+<span class="highlight_builtin_type">void</span> <span class="highlight_function">main</span>() {
+    <span class="highlight_type">VS_OUT</span> _arg0;
+    _arg0.texcoord1 <span class="highlight_operator">=</span> _pass_smoke_particle_in_frag_in_texcoord1;
+    _arg0.texcoord2 <span class="highlight_operator">=</span> _pass_smoke_particle_in_frag_in_texcoord2;
+    _arg0.texcoord3 <span class="highlight_operator">=</span> _pass_smoke_particle_in_frag_in_texcoord3;
+    _arg0.alpha_factor <span class="highlight_operator">=</span> _pass_smoke_particle_in_frag_in_alpha_factor;
+    <span class="highlight_type">FS_OUT</span> _res <span class="highlight_operator">=</span> <span class="highlight_function_call">_pass_smoke_particle_stage_fragment</span>(_arg0, _draw.dynamic_data);
+    _pass_smoke_particle_out_color = _res.color;
+}</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="project">
+                    <h2 class="project_header"><a href="https://github.com/kociap/gravity_simulation">Gravity
                             Simulation</a> [C++, OpenGL]</h2>
-                    <div class="project_images">
+                    <div class="large_project_images">
                         <img src="https://raw.githubusercontent.com/kociap/gravity_simulation/master/images/two_stars.gif"
                             alt="Two stars orbiting each other">
                     </div>
@@ -51,7 +419,8 @@
                 </section>
 
                 <section class="project">
-                    <h2 class="project_title"><a href="https://github.com/kociap/anton_gizmo">Anton Gizmo</a> [C++]</h2>
+                    <h2 class="project_header"><a href="https://github.com/kociap/anton_gizmo">Anton Gizmo</a> [C++]
+                    </h2>
                     <div class="project_images">
                         <img src="https://raw.githubusercontent.com/kociap/media/master/anton_gizmo/gizmos_translation.png"
                             alt="Translation gizmos">
@@ -68,7 +437,7 @@
                 </section>
 
                 <section class="project">
-                    <h2 class="project_title"><a href="https://github.com/kociap/anton_core">Anton Core</a> [C++]</h2>
+                    <h2 class="project_header"><a href="https://github.com/kociap/anton_core">Anton Core</a> [C++]</h2>
                     <p class="project_text">
                         C++ compilation times are notoriously slow. The standard library headers are large and can
                         take even seconds to compile (for example the <code>&lt;filesystem&gt;</code> header). The
@@ -105,8 +474,8 @@
                         Below are two example code snippets presenting the differences between <code>anton::Array</code>
                         and <code>std::vector</code>
                     </p>
-                    <div class="code_blocks">
-                        <div class="code_block grid_column_1">
+                    <div class="code_blocks two_column">
+                        <div class="code_block">
                             <pre><code><span class="highlight_comment">// constructs an array with 10 elements, all equal to 1</span>
 <span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">anton</span>::<span class="highlight_type">i64</span>&gt; v1(<span class="highlight_number">10</span>, <span class="highlight_number">1</span>);
 <span class="highlight_comment">// constructs an array with 10 elements, all equal to 1</span>
@@ -122,13 +491,13 @@
 };
 
 <span class="highlight_comment">// object is moved into the array.
-// ANTON_MOV is a macro that performs the same cast as std::move, 
-// but it does not require a function call, thus simplifying debugging 
+// ANTON_MOV is a macro that performs the same cast as std::move,
+// but it does not require a function call, thus simplifying debugging
 // and reducing overhead in debug builds.</span>
 <span class="highlight_type">Type</span> t;
 <span class="highlight_type">anton</span>::<span class="highlight_type">Array</span>&lt;<span class="highlight_type">Type</span>&gt; v4{<span class="highlight_type">anton</span>::variadic_construct, <span class="highlight_type">ANTON_MOV</span>(t)};</code></pre>
                         </div>
-                        <div class="code_block grid_column_2">
+                        <div class="code_block">
                             <pre><code><span class="highlight_comment">// constructs an array with 10 elements, all equal to 1</span>
 <span class="highlight_type">std</span>::<span class="highlight_type">vector</span>&lt;<span class="highlight_type">std</span>::<span class="highlight_type">int64_t</span>&gt; v1(<span class="highlight_number">10</span>, <span class="highlight_number">1</span>);
 <span class="highlight_comment">// constructs a vector with elements 10 and 1</span>
@@ -150,7 +519,7 @@
                 </section>
 
                 <section class="project">
-                    <h2 class="project_title"><a href="https://github.com/kociap/GameEngine">Anton Engine</a> [C++,
+                    <h2 class="project_header"><a href="https://github.com/kociap/GameEngine">Anton Engine</a> [C++,
                         OpenGL]</h2>
                     <p class="project_text">
                         Game engine I've written in C++17 and intend to use to build a hack and slash dungeon
@@ -159,20 +528,20 @@
                     </p>
                     <ul class="project_list">
                         <li>
-                            replacement for standard library called atl (anton template library, exported as anton_core)
+                            replacement for standard library called atl (anton template library, turned into anton_core)
                             with focus on unicode.
                         </li>
                         <li>
                             immediate mode gui library with builtin docking and tiling (WIP).
                         </li>
                         <li>
-                            basic WYSIWYG editor with custom gizmos (exported as anton_gizmo).
+                            basic WYSIWYG editor with custom gizmos (turned into anton_gizmo).
                         </li>
                         <li>
                             OBJ, PNG and TGA importers.
                         </li>
                         <li>
-                            math library (exported as anton_math).
+                            math library (turned into anton_math).
                         </li>
                     </ul>
                     <p class="project_text">
@@ -186,7 +555,7 @@
                     </div>
                 </section>
                 <section class="project">
-                    <h2 class="project_title"><a href="https://github.com/kociap/mimas">mimas</a> [C]</h2>
+                    <h2 class="project_header"><a href="https://github.com/kociap/mimas">mimas</a> [C]</h2>
                     <p class="project_text">
                         mimas is a windowing and system abstraction framework written in C created specifically for
                         use in game engines and games. It is by design cross-platform and cross-backend, however,
@@ -203,7 +572,7 @@
                     </p>
                 </section>
                 <section class="project">
-                    <h2 class="project_title"><a href="https://github.com/kociap/SpaceMcShooty">SpaceMcShooty</a>
+                    <h2 class="project_header"><a href="https://github.com/kociap/SpaceMcShooty">SpaceMcShooty</a>
                         [UnrealEngine]</h2>
                     <div class="project_images">
                         <img src="https://img.itch.zone/aW1hZ2UvNTIxNDA4LzI3MDcwNjIucG5n/347x500/vsOjtb.png">
@@ -228,9 +597,9 @@
                     </p>
                 </section>
                 <section class="project">
-                    <h2 class="project_title"><a href="https://github.com/kociap/UnityBreakout">Unity Breakout</a>
+                    <h2 class="project_header"><a href="https://github.com/kociap/UnityBreakout">Unity Breakout</a>
                         [UnityEngine]</h2>
-                    <div class="project_images">
+                    <div class="large_project_images">
                         <img src="https://raw.githubusercontent.com/kociap/UnityBreakout/master/gifs/breakout1.gif">
                     </div>
                     <p class="project_text">
@@ -242,7 +611,7 @@
         </article>
         <article>
             <div class="article_content">
-                <h1>Contact</h1>
+                <h1 class="article_header">Contact</h1>
                 <p>
                     Feel free to contact me at p.kocia@wp.pl
                 </p>

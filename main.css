@@ -11,7 +11,7 @@
 
 :root {
     font-weight: normal;
-    font-family: Helvetica;
+    font-family: Helvetica, sans-serif;
     /* 
      * min-width: auto; is the default flexbox sets which breaks how pre blocks size.
      * change to min-width: 0; which is the default and fixes the behaviour
@@ -198,7 +198,7 @@ code {
 
 .code_blocks {
     width: 100%;
-    font-family: "Consolas";
+    font-family: "Consolas", monospace;
 }
 
 .code_block {
